@@ -107,7 +107,7 @@ def _get_spline_trend(data,
     TODO: docs
     """
     # get knots from stim
-    knots = _get_knots(stim, k=order, followup=100, spacing=250)
+    knots = _get_knots(stim, k=order, followup=followup, spacing=spacing)
     x = np.arange(len(stim))
 
     if disc_idx is not None:
@@ -181,10 +181,11 @@ def detrend(mov,
         plt.show()
 
     # Recompute problem areas
-    disc_idx[1:] = disc_idx[1:] - np.cumsum(np.ones(len(disc_idx) - 1) * 3)
-    disc_idx = disc_idx - 1
-    disc_idx = np.append(disc_idx,
-                         np.argwhere(filt.convolve1d(stim > 0,
+    if len(disc_idx) > 0:
+        disc_idx[1:] = disc_idx[1:] - np.cumsum(np.ones(len(disc_idx) - 1) * 3)
+        disc_idx = disc_idx - 1
+        disc_idx = np.append(disc_idx,
+        	                 np.argwhere(filt.convolve1d(stim > 0,
                                                      np.array([1, -1]))))
     return mov_detr, trend, stim, np.unique(disc_idx)
 
